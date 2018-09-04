@@ -164,6 +164,7 @@ class App extends Component {
                 directory={this.state.tree}
                 selectedFilePath={this.state.selectedFile}
                 fileClickHandler={this.onClickNode}
+                expended={true}
               />
             </div>
             <main className="col-12 col-md-9 col-xl-9 bd-content my-content" role="main">

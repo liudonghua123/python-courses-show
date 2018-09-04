@@ -20,12 +20,13 @@ class NavigationTree extends Component {
   }
 
   render () {
-    const { directory, fileClickHandler, selectedFilePath, folderClickHandler } =  this.props;
+    const { directory, fileClickHandler, selectedFilePath, folderClickHandler, expended } =  this.props;
     return (
       <NestedFileTreeView
         selectedFilePath={selectedFilePath}
         fileClickHandler={fileClickHandler}
         folderClickHandler={this.folderClickHandler}
+        expended={expended}
         directory={directory} />
     )
   }
