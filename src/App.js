@@ -46,6 +46,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
+    console.info(`config is ${JSON.stringify(config)}`);
     const response = await fetch(config.api);
     const tree = await response.json();
     console.info(`tree is ${JSON.stringify(tree)}`)

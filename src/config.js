@@ -1,5 +1,5 @@
 const config = {
-    'dev': {
+    'development': {
         'host': 'http://localhost:8080',
         'api': 'http://localhost:8080/api/'
     },
@@ -8,6 +8,8 @@ const config = {
         'api': '/api/'
     }
 }
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV || 'development';
+
+console.info(`process.env.NODE_ENV is ${process.env.NODE_ENV}`);
 
 export default config[env];
