@@ -1,0 +1,47 @@
+:focus {
+  outline: 0;
+}
+
+.my-sidebar {
+  padding: 0;
+}
+
+.my-content {
+  padding: 0;
+  height: 75vh;
+}
+
+.pdf-container {
+  display: flex;
+  /* width: 350px; */
+  height: 500px;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: scroll;
+}
+
+.pdf-document {
+  box-shadow: 0 30px 40px 0 rgba(16, 36, 94, 0.2);
+}
+
+.pdf-page {
+}
+
+.pdf-indicator {
+  display: flex;
+  align-self: center;
+}
+
+.SimplePDF {
+  width: 350px; /* width of pdf document box should be != 0 */
+  height: 500px; /* height of pdf document box should be != 0 */
+  border: 1px dashed red; /* optional */
+  margin: 15px; /* optional */
+  padding: 15px; /* optional */
+  float: left; /* optional */
+}
+
+.text-center-in-p {
+  text-align: center;
+  font-size: 1.25em;
+}

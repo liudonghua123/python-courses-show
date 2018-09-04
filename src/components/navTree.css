@@ -1,0 +1,39 @@
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.tree {
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: #21252b;
+    height: 100%;
+    padding: 10px;
+}
+
+.m-node.placeholder {
+    border: 1px dashed #1385e5;
+}
+
+.m-node .inner {
+    color: #9da5b4;
+    font-size: 12px;
+    font-family: Menlo;
+}
+
+.m-node .node {
+    display: inline-block;
+    width: 100%;
+    padding: 4px 5px;
+}
+
+.m-node .node.is-active {
+    background-color: #31363f;
+}
+
+.m-node .collapse {
+    display: inline-block;
+}

@@ -1,0 +1,30 @@
+[{
+    "title": "Python-2018-春",
+    "isDirectory": true,
+    "expanded": true,
+    "children": [{
+        "title": "team1",
+        "isDirectory": true,
+        "children": [{
+            "title": "src",
+            "isDirectory": true,
+            "children": [{
+                "title": "hello.py"
+            }]
+        }, {
+            "title": "README.md"
+        }]
+    }, {
+        "title": "team2",
+        "isDirectory": true,
+        "children": [{
+            "title": "src",
+            "isDirectory": true,
+            "children": [{
+                "title": "hello.py"
+            }]
+        }, {
+            "title": "README.md"
+        }]
+    }]
+}]
