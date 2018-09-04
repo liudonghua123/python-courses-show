@@ -4,6 +4,7 @@
 
 .my-sidebar {
   padding: 0;
+  line-height: 1;
 }
 
 .my-content {
@@ -44,3 +45,4 @@
   text-align: center;
   font-size: 1.25em;
 }
+
