@@ -33,7 +33,8 @@ class App extends Component {
     active: null,
     content: "",
     tree: {_contents: []},
-    selectFile: '',
+    filename: 'dumb.py',
+    selectedFile: '',
     contents: '',
     numPages: null,
     pageNumber: 1,
@@ -72,63 +73,85 @@ class App extends Component {
     this.setState({
       active: node,
       content: response,
-      selectFile: node.name,
+      filename: node.name,
+      selectedFile: node.path,
       filePath: config.host + node.path
     });
   };
 
+  urlTransform = (uri) => {
+    // 如果是绝对路径，则不作处理
+    if(uri.startsWith('http') || uri.startsWith('/')) {
+      return uri;
+    }
+    return this.state.filePath.match(/.*\//) + uri;
+  }
+
   render() {
     let renderComponent;
-    const extension = this.state.selectFile.split('.').pop();
+    const extension = this.state.filename.split('.').pop();
     switch(extension) {
       case 'md':
         renderComponent = (
-          <ReactMarkdown source={this.state.content} />
+          <ReactMarkdown
+            source={this.state.content}
+            transformImageUri={this.urlTransform}
+            transformLinkUri={this.urlTransform} />
         )
         break;
       case 'png':
       case 'jpg':
       case 'gif':
         renderComponent = (
-          <img src={this.state.filePath} style={{'height': '500px'}}/>
+          <img src={this.state.filePath} style={{'min-height': '100px', 'max-height': '500px'}}/>
         )
         break;
       case 'pdf':
         const { pageNumber, numPages } = this.state;
         console.info(`render pdf ${this.state.filePath}, ${pageNumber} of ${numPages}`)
         renderComponent = (
-          <div className="pdf-container">
-             {/* <Document
-               className="pdf-document"
-               file={this.state.filePath}
-               onLoadSuccess={this.onDocumentLoadSuccess}
-               >
-               <Page 
-                 className="pdf-page"
-                 width={350}
-                 renderMode="svg"
-                 pageNumber={pageNumber} />
-             </Document>
-             <p className="pdf-indicator">Page {pageNumber} of {numPages}</p> */}
-             <PDF file={this.state.filePath} scale={1.25} />
-          </div>
+          // <div className="pdf-container">
+          //    <Document
+          //      className="pdf-document"
+          //      file={this.state.filePath}
+          //      onLoadSuccess={this.onDocumentLoadSuccess}
+          //      >
+          //      <Page 
+          //        className="pdf-page"
+          //        width={350}
+          //        renderMode="svg"
+          //        pageNumber={pageNumber} />
+          //    </Document>
+          //    <p className="pdf-indicator">Page {pageNumber} of {numPages}</p>
+          // </div>
+          <PDF file={this.state.filePath} scale={1.25} />
+        )
+        break;
+      case 'py':
+      case 'pyw':
+      case 'java':
+      case 'txt':
+        renderComponent = (
+          <AceEditor
+            value={this.state.content}
+            mode="python"
+            theme="github"
+            name="UNIQUE_ID_OF_DIV"
+            editorProps={{ $blockScrolling: true }}
+            setOptions={{ useWorker: false }}
+            readOnly
+            width="100%"
+            fontSize={20}
+          />  
         )
         break;
       default:
-      renderComponent=(
-        <AceEditor
-          value={this.state.content}
-          mode="python"
-          theme="github"
-          name="UNIQUE_ID_OF_DIV"
-          editorProps={{ $blockScrolling: true }}
-          setOptions={{ useWorker: false }}
-          readOnly
-          width="100%"
-          fontSize={20}
-        />  
-      )
-      break;
+        renderComponent=(
+          <div class="shadow-sm p-3 mb-5 bg-white rounded">
+            <p>不支持预览<a href={this.state.filePath}><span class="font-weight-bold">{this.state.filename}</span></a></p>
+          </div>
+        )
+        break;
     }
     return (
       <div className="App">
@@ -138,7 +161,7 @@ class App extends Component {
             <div className="col-12 col-md-3 col-xl-3 bd-sidebar my-sidebar">
               <NavigationTree
                 directory={this.state.tree}
-                selectedFilePath={this.state.filePath}
+                selectedFilePath={this.state.selectedFile}
                 fileClickHandler={this.onClickNode}
               />
             </div>
