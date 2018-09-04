@@ -32,7 +32,7 @@ class App extends Component {
   state = {
     active: null,
     content: "",
-    tree: {_contents: []},
+    tree: [],
     filename: 'dumb.py',
     selectedFile: '',
     contents: '',
@@ -65,6 +65,24 @@ class App extends Component {
   //     });
   //   });
   // };
+
+  onLeafNodeClick = async rowInfo => {
+    console.info(`clicked ${JSON.stringify(rowInfo)}`);
+    const node = rowInfo.node;
+    if(! node.isDirectory) {
+      console.info(`clicked ${JSON.stringify(node)}`);
+      let response = await fetch(config.host + node.path);
+      response = await response.text();
+      // console.info(`response is ${response}`)
+      this.setState({
+        active: node,
+        content: response,
+        filename: node.title,
+        selectedFile: node.path,
+        filePath: config.host + node.path
+      });
+    }
+  }
 
   onClickNode = async node => {
     console.info(`clicked ${JSON.stringify(node)}`);
@@ -160,11 +178,9 @@ class App extends Component {
         <div className="container-fluid">
           <div className="row flex-xl-nowrap">
             <div className="col-12 col-md-3 col-xl-3 bd-sidebar my-sidebar">
-              <NavigationTree
-                directory={this.state.tree}
-                selectedFilePath={this.state.selectedFile}
-                fileClickHandler={this.onClickNode}
-                expended={true}
+              <Tree
+                treeData={this.state.tree}
+                onLeafNodeClick={this.onLeafNodeClick}
               />
             </div>
             <main className="col-12 col-md-9 col-xl-9 bd-content my-content" role="main">

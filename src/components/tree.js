@@ -7,76 +7,38 @@ class Tree extends Component {
     super(props);
 
     this.state = {
-        searchString: '',
-        searchFocusIndex: 0,
-        searchFoundCount: null,
-        treeData: [{
-            title: 'Python-2018-春',
-            isDirectory: true,
-            expanded: true,
-            children: [{
-                    title: 'team1',
-                    isDirectory: true,
-                    children: [{
-                        title: 'src',
-                        isDirectory: true,
-                        children: [{
-                            title: 'hello.py'
-                        }]
-                    }, {
-                        title: 'README.md'
-                    }]
-                },
-                {
-                    title: 'team2',
-                    isDirectory: true,
-                    children: [{
-                        title: 'src',
-                        isDirectory: true,
-                        children: [{
-                            title: 'hello.py'
-                        }]
-                    }, {
-                        title: 'README.md'
-                    }]
-                }
-            ],
-        }],
     };
-
-    this.updateTreeData = this.updateTreeData.bind(this);
-    this.expandAll = this.expandAll.bind(this);
-    this.collapseAll = this.collapseAll.bind(this);
   }
 
-  updateTreeData(treeData) {
+  updateTreeData = (treeData) => {
     this.setState({ treeData });
   }
 
-  expand(expanded) {
+  expand = (expanded) => {
     this.setState({
       treeData: toggleExpandedForAll({
-        treeData: this.state.treeData,
         expanded,
       }),
     });
   }
 
-  expandAll() {
+  expandAll = () => {
     this.expand(true);
   }
 
-  collapseAll() {
+  collapseAll = () => {
     this.expand(false);
+  }
+
+  onLeafNodeClickDefault = node => {
+    global.alert(`clicked ${JSON.stringify(node)}`);
   }
 
   render() {
     const {
       treeData,
-      searchString,
-      searchFocusIndex,
-      searchFoundCount,
-    } = this.state;
+      onLeafNodeClick
+    } = this.props;
 
     const alertNodeInfo = ({ node, path, treeIndex }) => {
       const objectString = Object.keys(node)
@@ -91,30 +53,14 @@ class Tree extends Component {
       );
     };
 
-    const selectPrevMatch = () =>
-      this.setState({
-        searchFocusIndex:
-          searchFocusIndex !== null
-            ? (searchFoundCount + searchFocusIndex - 1) % searchFoundCount
-            : searchFoundCount - 1,
-      });
-
-    const selectNextMatch = () =>
-      this.setState({
-        searchFocusIndex:
-          searchFocusIndex !== null
-            ? (searchFocusIndex + 1) % searchFoundCount
-            : 0,
-      });
-
     return (
         <div style={{ flex: '1 0 50%', padding: '15px 0', height: '100vh' }}>
           <SortableTree
             theme={FileExplorerTheme}
             treeData={treeData}
             onChange={this.updateTreeData}
-            canDrag={false}
-            canDrop={false}
+            canDrag={() => false}
+            canDrop={() => false}
             generateNodeProps={rowInfo => ({
               icons: rowInfo.node.isDirectory
                 ? [
@@ -145,7 +91,29 @@ class Tree extends Component {
                     >
                       F
                     </div>,
-                  ]
+                  ],
+                  buttons: [
+                    <button
+                      style={{
+                        padding: 0,
+                        borderRadius: '100%',
+                        backgroundColor: 'gray',
+                        color: 'white',
+                        width: 16,
+                        height: 16,
+                        border: 0,
+                        fontWeight: 100,
+                      }}
+                      onClick={() => alertNodeInfo(rowInfo)}
+                    >
+                      i
+                    </button>,
+                  ],
+                  title: ({node, path, treeIndex}) => {
+                    return (
+                      <span onClick={() => onLeafNodeClick(rowInfo)}>{node.title}</span>
+                    );
+                  }
             })}
           />
         </div>

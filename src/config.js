@@ -1,11 +1,11 @@
 const config = {
     'development': {
         'host': 'http://localhost:8080',
-        'api': 'http://localhost:8080/api/'
+        'api': 'http://localhost:8080/api/?type=reactSortableTree'
     },
     'production': {
         'host': '',
-        'api': '/api/'
+        'api': '/api/?type=reactSortableTree'
     }
 }
 const env = process.env.NODE_ENV || 'development';
