@@ -5,13 +5,20 @@ import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 class Tree extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
+      treeData: props.treeData
     };
+    console.info(`constructor props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({treeData: props.treeData});
+    console.info(`componentWillReceiveProps props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
   }
 
   updateTreeData = (treeData) => {
-    this.setState({ treeData });
+    this.setState({treeData});
+    console.info(`updateTreeData treeData: ${JSON.stringify(treeData)} `);
   }
 
   expand = (expanded) => {
@@ -57,7 +64,7 @@ class Tree extends Component {
         <div style={{ flex: '1 0 50%', padding: '15px 0', height: '100vh' }}>
           <SortableTree
             theme={FileExplorerTheme}
-            treeData={treeData}
+            treeData={this.state.treeData}
             onChange={this.updateTreeData}
             canDrag={() => false}
             canDrop={() => false}
@@ -111,7 +118,13 @@ class Tree extends Component {
                   ],
                   title: ({node, path, treeIndex}) => {
                     return (
-                      <span onClick={() => onLeafNodeClick(rowInfo)}>{node.title}</span>
+                      <span>
+                      {node.isDirectory ? (
+                        node.title
+                      ) : (
+                        <span onClick={() => onLeafNodeClick(rowInfo)}>{node.title}</span>
+                      )}
+                      </span>
                     );
                   }
             })}
