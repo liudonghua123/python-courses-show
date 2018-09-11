@@ -8,17 +8,17 @@ class Tree extends Component {
     this.state = {
       treeData: props.treeData
     };
-    console.info(`constructor props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
+    // console.info(`constructor props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
   }
 
   componentWillReceiveProps(props) {
     this.setState({treeData: props.treeData});
-    console.info(`componentWillReceiveProps props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
+    // console.info(`componentWillReceiveProps props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
   }
 
   updateTreeData = (treeData) => {
     this.setState({treeData});
-    console.info(`updateTreeData treeData: ${JSON.stringify(treeData)} `);
+    // console.info(`updateTreeData treeData: ${JSON.stringify(treeData)} `);
   }
 
   expand = (expanded) => {
@@ -43,7 +43,6 @@ class Tree extends Component {
 
   render() {
     const {
-      treeData,
       onLeafNodeClick
     } = this.props;
 

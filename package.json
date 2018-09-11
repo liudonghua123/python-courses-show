@@ -10,14 +10,16 @@
     "react": "^16.4.2",
     "react-ace": "^6.1.4",
     "react-dom": "^16.4.2",
+    "react-file-viewer": "^0.5.0",
     "react-markdown": "^3.5.0",
     "react-pdf": "^3.0.5",
     "react-pdf-js-infinite": "^1.2.0",
+    "react-reader": "^0.17.1",
     "react-scripts": "1.1.5",
     "react-sortable-tree": "^2.2.0",
     "react-sortable-tree-theme-file-explorer": "^1.1.2",
     "react-ui-tree": "^4.0.0",
-    "simple-react-pdf": "^1.0.9"
+    "simple-react-pdf": "github:liudonghua123/npm-simple-react-pdf"
   },
   "scripts": {
     "start": "react-scripts start",

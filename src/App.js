@@ -14,19 +14,25 @@ import NavTree from "./components/navTree";
 
 // Content editor (readonly)
 // see https://github.com/securingsincity/react-ace#basic-usage
-import AceEditor from "react-ace";
-import brace from "brace";
-import "brace/mode/python";
-import "brace/theme/github";
+// import AceEditor from "react-ace";
+// import brace from "brace";
+// import "brace/mode/python";
+// import "brace/theme/github";
+import CodeEditor from './components/codeEditor';
+import MarkdownEditor from './components/markdownEditor';
 import config from './config';
-// https://github.com/rexxars/react-markdown
-import ReactMarkdown from 'react-markdown'
 // https://github.com/wojtekmaj/react-pdf
 import { Document, Page, Outline } from 'react-pdf';
 // https://github.com/javascriptiscoolpl/npm-simple-react-pdf
-import spdf from "simple-react-pdf";
+import {SimplePDF} from "simple-react-pdf";
 // https://github.com/McRipper/react-pdf-js-infinite
 import PDF from 'react-pdf-js-infinite';
+
+// https://github.com/plangrid/react-file-viewer
+import FileViewer from 'react-file-viewer';
+
+// https://github.com/gerhardsletten/react-reader/
+import {ReactReader} from 'react-reader'
 
 class App extends Component {
   state = {
@@ -46,42 +52,22 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    console.info(`config is ${JSON.stringify(config)}`);
+    // console.info(`config is ${JSON.stringify(config)}`);
     const response = await fetch(config.api);
     const tree = await response.json();
-    console.info(`tree is ${JSON.stringify(tree)}`)
+    // console.info(`tree is ${JSON.stringify(tree)}`)
     this.setState({tree: tree});
   }
 
-  // onClickNode = node => {
-  //   console.info(`clicked ${JSON.stringify(node)}`);
-  //   fetch(config.host + node.path)
-  //   .then(response => response.text())
-  //   .then(response => {
-  //     console.info(`response is ${response}`)
-  //     this.setState({
-  //       active: node,
-  //       content: response
-  //     });
-  //   });
-  // };
-
   onLeafNodeClick = async rowInfo => {
-    console.info(`clicked ${JSON.stringify(rowInfo)}`);
+    // console.info(`clicked ${JSON.stringify(rowInfo)}`);
     const node = rowInfo.node;
-    if(! node.isDirectory) {
-      console.info(`clicked ${JSON.stringify(node)}`);
-      let response = await fetch(config.host + node.path);
-      response = await response.text();
-      // console.info(`response is ${response}`)
-      this.setState({
-        active: node,
-        content: response,
-        filename: node.title,
-        selectedFile: node.path,
-        filePath: config.host + node.path
-      });
-    }
+    this.setState({
+      active: node,
+      filename: node.title,
+      selectedFile: node.path,
+      filePath: config.host + node.path
+    });
   }
 
   onClickNode = async node => {
@@ -98,24 +84,53 @@ class App extends Component {
     });
   };
 
-  urlTransform = (uri) => {
-    // 如果是绝对路径，则不作处理
-    if(uri.startsWith('http') || uri.startsWith('/')) {
-      return uri;
-    }
-    return this.state.filePath.match(/.*\//) + uri;
+  onError(e) {
+    console.error(e, 'error in file-viewer');
   }
 
   render() {
     let renderComponent;
     const extension = this.state.filename.split('.').pop();
     switch(extension) {
+      case 'png':
+      case 'jpg':
+      case 'gif':
+      case 'jpeg':
+      case 'webp':
+      case 'bmp':
+      // case 'pdf':
+      case 'csv':
+      // case 'xls':
+      case 'xlsx':
+      // case 'rtf':
+      // case 'doc':
+      case 'docx':
+      case 'mp4':
+      // case 'mov':
+      // case 'avi':
+      case 'webm':
+      case 'mp3':
+      case 'wexbim':
+        renderComponent = (
+          <FileViewer
+            // style={{'height': '50%', 'width': '50vh', 'overflow': 'auto'}}
+            fileType={extension}
+            filePath={this.state.filePath}
+            onError={this.onError}
+          />
+        )
+        break;
+      case 'epub':
+        renderComponent = (
+            <ReactReader
+              url={this.state.filePath}
+            />
+        )
+        break;
       case 'md':
         renderComponent = (
-          <ReactMarkdown
-            source={this.state.content}
-            transformImageUri={this.urlTransform}
-            transformLinkUri={this.urlTransform} />
+          <MarkdownEditor
+            filePath={this.state.filePath} />
         )
         break;
       case 'png':
@@ -127,41 +142,24 @@ class App extends Component {
         break;
       case 'pdf':
         const { pageNumber, numPages } = this.state;
-        console.info(`render pdf ${this.state.filePath}, ${pageNumber} of ${numPages}`)
         renderComponent = (
-          // <div className="pdf-container">
-          //    <Document
-          //      className="pdf-document"
-          //      file={this.state.filePath}
-          //      onLoadSuccess={this.onDocumentLoadSuccess}
-          //      >
-          //      <Page 
-          //        className="pdf-page"
-          //        width={350}
-          //        renderMode="svg"
-          //        pageNumber={pageNumber} />
-          //    </Document>
-          //    <p className="pdf-indicator">Page {pageNumber} of {numPages}</p>
-          // </div>
-          <PDF file={this.state.filePath} scale={1.25} />
+          <SimplePDF file={this.state.filePath}/>
         )
         break;
       case 'py':
       case 'pyw':
       case 'java':
+      case 'c':
+      case 'cpp':
+      case 'rb':
+      case 'js':
       case 'txt':
         renderComponent = (
-          <AceEditor
-            value={this.state.content}
+          <CodeEditor
+            filePath={this.state.filePath}
             mode="python"
             theme="github"
-            name="UNIQUE_ID_OF_DIV"
-            editorProps={{ $blockScrolling: true }}
-            setOptions={{ useWorker: false }}
-            readOnly
-            width="100%"
-            fontSize={20}
-          />  
+          />
         )
         break;
       default:
@@ -183,9 +181,9 @@ class App extends Component {
                 onLeafNodeClick={this.onLeafNodeClick}
               />
             </div>
-            <main className="col-12 col-md-9 col-xl-9 bd-content my-content" role="main">
+            <div className="col-12 col-md-9 col-xl-9 bd-content my-content" role="main">
               {renderComponent}
-            </main>
+            </div>
           </div>
         </div>
         <Footer />
