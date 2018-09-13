@@ -2,18 +2,23 @@ import React, { Component } from 'react';
 import SortableTree, { toggleExpandedForAll } from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
+import config from '../config';
+
 class Tree extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      treeData: props.treeData
+      treeData: []
     };
     // console.info(`constructor props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({treeData: props.treeData});
-    // console.info(`componentWillReceiveProps props: ${JSON.stringify(props)}, state: ${JSON.stringify(this.state)} `);
+  async componentDidMount() {
+    // console.info(`config is ${JSON.stringify(config)}`);
+    const response = await fetch(config.api);
+    const treeData = await response.json();
+    // console.info(`treeData is ${JSON.stringify(treeData)}`)
+    this.setState({treeData: treeData});
   }
 
   updateTreeData = (treeData) => {

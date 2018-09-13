@@ -38,7 +38,6 @@ class App extends Component {
   state = {
     active: null,
     content: "",
-    tree: [],
     filename: 'dumb.py',
     selectedFile: '',
     contents: '',
@@ -49,14 +48,6 @@ class App extends Component {
   
   onDocumentLoadSuccess = ({ numPages }) => {
     this.setState({ numPages });
-  }
-
-  async componentDidMount() {
-    // console.info(`config is ${JSON.stringify(config)}`);
-    const response = await fetch(config.api);
-    const tree = await response.json();
-    // console.info(`tree is ${JSON.stringify(tree)}`)
-    this.setState({tree: tree});
   }
 
   onLeafNodeClick = async rowInfo => {
@@ -90,7 +81,7 @@ class App extends Component {
 
   render() {
     let renderComponent;
-    const extension = this.state.filename.split('.').pop();
+    const extension = this.state.filename.split('.').pop().toLowerCase();
     switch(extension) {
       case 'png':
       case 'jpg':
@@ -113,7 +104,7 @@ class App extends Component {
       case 'wexbim':
         renderComponent = (
           <FileViewer
-            // style={{'height': '50%', 'width': '50vh', 'overflow': 'auto'}}
+            // style={{'height': '90vh', 'width': '100%', 'overflow': 'auto'}}
             fileType={extension}
             filePath={this.state.filePath}
             onError={this.onError}
@@ -177,7 +168,6 @@ class App extends Component {
           <div className="row flex-xl-nowrap">
             <div className="col-12 col-md-3 col-xl-3 bd-sidebar my-sidebar">
               <Tree
-                treeData={this.state.tree}
                 onLeafNodeClick={this.onLeafNodeClick}
               />
             </div>
